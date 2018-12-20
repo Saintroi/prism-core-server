@@ -13,9 +13,11 @@ class Contact(Resource):
     def get(self):
         db.connect()
         db.cursor.execute("SELECT * FROM contact")
-        result =  {'contacts': [i[0] for i in db.cursor.fetchall()]}
+        columns = [i[0] for i in db.cursor.description]
+        #result = {'contacts': [i[0] for i in db.cursor.description]}
+        result =  {'contacts': [dict(zip(tuple(columns), i)) for i in db.cursor.fetchall()]}
         db.conn.close()
-        return result
+        return jsonify(result)
 
 
 api.add_resource(Contact, '/contacts')
