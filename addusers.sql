@@ -23,5 +23,4 @@ CREATE TABLE IF NOT EXISTS `contacts` (
 -- Dumping data for table `user_details`
 --
 
-INSERT INTO `contacts` (`id`, `first_name`, `last_name`, `email`, 'phone', `title`, `admin`) VALUES
-('0', 'drew', 'nelson', 'drew.nelson@prismsystems.com', '(205) 908-8720', 'system designs group', 'true')
+INSERT INTO contacts (first_name, last_name, email, phone, title, admin) VALUES ('drew', 'nelson', 'drew.nelson@prismsystems.com', '(205) 908-8720', 'system designs group', true)
