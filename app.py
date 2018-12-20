@@ -22,5 +22,9 @@ class Contact(Resource):
 
 api.add_resource(Contact, '/contacts')
 
-#if __name__ == '__main__':
- #   app.run(port='5002')
+@app.route("/")
+def root():
+    return "<h1 style='color:blue'>Hello There!</h1>"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
