@@ -1,0 +1,17 @@
+{
+    "app": {
+      "url": "APP_URL",
+      "clientUrl": "APP_CLIENT_URL"
+    },
+    "database": {
+      "url": "DATABASE_URL"
+    },
+    "env": "NODE_ENV",
+    "jwt": {
+      "cert": "JWT_CERT",
+      "pub": "JWT_PUB"
+    },
+    "redis": {
+      "url": "REDIS_URL"
+  }
+}
