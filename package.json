@@ -1,0 +1,14 @@
+{
+  "name": "prism-core-server",
+  "version": "0.0.1",
+  "description": "Directory application for Prism Systems",
+  "main": "server.js",
+  "repository": "https://github.com/Saintroi/prism-core-server.git",
+  "author": "Drew Nelson <talonroi21@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.0.2"
+  }
+}
