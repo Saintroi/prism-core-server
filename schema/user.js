@@ -10,8 +10,9 @@ const typeDefs = gql`
     firstName: String!
     lastName: String!
     email: String!
-    cellNumber: String
-    officeNumber: String
+    type: String
+    cellPhone: String
+    officePhone: String
     title: String
     location: String
     admin: Boolean
@@ -25,6 +26,18 @@ const typeDefs = gql`
     me: User
     users (firstName: String, lastName: String): [User]
   }
+  input UserInput{
+    firstName: String!
+    lastName: String!
+    email: String!
+    type: String
+    cellPhone: String
+    officePhone: String
+    title: String
+    location: String
+    admin: Boolean
+  }
+
   extend type Mutation {
     grantAdmin (
       id: String
@@ -32,17 +45,26 @@ const typeDefs = gql`
     revokeAdmin (
       id: String
     ): User
+    createUser (
+      input: UserInput
+    ): User
+    login (
+      email: String
+      auth: String
+    ): Boolean
   }
 `;
 
 const resolvers = {
   Query: {
     me: utils.wrap(auth.restrict, api.user.getMe),
-    users: utils.wrap(auth.restrict, api.user.getAll),
+    users: utils.wrap(api.user.getAll),
   },
   Mutation: {
     grantAdmin: utils.wrap(auth.restrictToAdmin, api.user.grantAdmin),
     revokeAdmin: utils.wrap(auth.restrictToAdmin, api.user.revokeAdmin),
+    createUser: utils.wrap(api.user.createUser),
+    login: utils.wrap(api.user.login)
   },
   User: {
     name: user => `${user.firstName} ${user.lastName}`,

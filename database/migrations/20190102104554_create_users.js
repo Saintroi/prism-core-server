@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
         t.string('first_name').notNull();
         t.string('last_name').notNull();
         t.string('email').notNull();
+        t.enu('type', ['employee', 'manager', 'executive']).nullable();
         t.string('cell_phone').nullable();
         t.string('office_phone').nullable();
         t.string('title').nullable();
