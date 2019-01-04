@@ -2,7 +2,7 @@ import { ApolloServer, gql } from 'apollo-server-express';
 import { merge } from 'lodash';
 import user from './user';
 
-const rootTypeDefs = `
+const rootTypeDefs = gql`
   type Query {
     name: String
   }
@@ -38,7 +38,7 @@ const schema = new ApolloServer({
   typeDefs,
   resolvers,
   playground: {
-    endpoint: '/graphql',
+    endpoint: 'http://localhost:4000/graphql',
     settings: {
       'editor.theme': 'dark'
     }

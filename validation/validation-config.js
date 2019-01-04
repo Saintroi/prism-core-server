@@ -32,11 +32,6 @@ const validationConfig = {
       validator.verify('lastName')
         .isRequired('Last name is required.');
   
-      validator.verify('cellPhone')
-        .isPhone('Must be a valid phone number.');
-
-      validator.verify('officePhone')
-      .isPhone('Must be a valid phone number.');
     },
     email(validator) {
       validator.setDefaultErrorMessage('Unable to send email message.');

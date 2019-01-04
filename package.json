@@ -25,6 +25,7 @@
     "knex": "^0.16.3",
     "lodash": "^4.17.11",
     "mysql": "^2.16.0",
+    "node-accountkit": "^1.1.6",
     "nodemon": "^1.18.9",
     "validator": "^10.10.0"
   },
@@ -33,6 +34,6 @@
   },
   "scripts": {
     "start": "node dist/index",
-    "start:dev": "./node_modules/.bin/cross-env NODE_ENV=development NODE_PATH=./config ./node_modules/.bin/nodemon server --exec babel-node"
+    "start:dev": "./node_modules/.bin/cross-env NODE_ENV=development NODE_PATH=./config nodemon ./server.js --exec babel-node"
   }
 }
