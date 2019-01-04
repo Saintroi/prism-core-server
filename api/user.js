@@ -34,12 +34,14 @@ userApi.getAll = (_, args) => userApi.fetchAll(args);
  * @param {Object} context
  */
 userApi.createUser = (async (_, args) => {
-  const user = await validate(
+  /*const user = await validate(
     'createUser',
     Object.assign({}, args, { type: 'user' }),
-  );
+  );*/
 
-  return userApi.createOne(user);
+  //const user = Object.assign({}, args, {type: 'user'});
+
+  return userApi.createOne(args.input);
 });
 
 /**

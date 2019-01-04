@@ -1,18 +1,29 @@
 import express from 'express';
-import http from 'http';
-import setup from './utils/setup';
-import schema from './schema';
+import server from './schema';
+import forceHttps from './middleware/force-https';
+import config from 'config';
+import errorHandler from './middleware/errors';
+import configRoutes from './routes/config-routes';
 
 const app = express();
-const server = http.createServer(app);
 
-setup.configure(app);
-//schema.applyMiddleware({
-//  app
-//});
-setup.start(server);
+// Middleware: GraphQL
+server.applyMiddleware({
+  app: app
+});
 
-export default {
-  app,
-  server
-};
+// Express: Port
+const port = process.env.PORT || 4000;
+
+// Express: Setup
+if (config.get('env') === 'production') app.use(forceHttps);
+app.use(errorHandler);
+configRoutes(app);
+
+// Express: Listener
+app.listen(port, () => {
+  console.log(`The server has started on port: ${port}`);
+  console.log(`http://localhost:${port}/graphql`);
+})
+
+export default app;
