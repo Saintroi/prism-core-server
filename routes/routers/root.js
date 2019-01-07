@@ -9,7 +9,7 @@ const router = express.Router();
  * root router
  */
 router.get('/', bypassCache, function(req, res){
-  res.sendFile(path.join(require.main.filename, '../index.html'))
+  res.send('Hello World');
 });
 
 export default router;

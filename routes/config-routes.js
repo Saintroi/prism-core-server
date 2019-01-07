@@ -6,7 +6,7 @@ import authRouter from './routers/auth';
  */
 
 const configRoutes = (app) => {
-  app.use('/auth', authRouter);
+  app.use('/login', authRouter);
   app.use('/', rootRouter);
 };
 
