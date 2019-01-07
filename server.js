@@ -17,8 +17,9 @@ const port = process.env.PORT || 4000;
 
 // Express: Setup
 if (config.get('env') === 'production') app.use(forceHttps);
-app.use(errorHandler);
 configRoutes(app);
+app.use(errorHandler);
+
 
 // Express: Listener
 app.listen(port, () => {

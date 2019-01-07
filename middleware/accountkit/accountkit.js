@@ -6,7 +6,10 @@ const Mustache  = require('mustache');
 const Request  = require('request');
 const Querystring  = require('querystring');
 const app = express();
+<<<<<<< HEAD
 import config from './config'
+=======
+>>>>>>> a4ade8132e741c0993fb33ba59605e0fd900ac16
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -14,10 +17,17 @@ app.use(bodyParser.json());
 const accountkit = {
   csrf_guid: Guid.raw(),
   account_kit_api_version: 'v1.1',
+<<<<<<< HEAD
   app_id: config.accountkit.appid,
   app_secret: config.accountkit.secret,
   me_endpoint_base_url: 'https://graph.accountkit.com/v1.1/me',
   token_exchange_base_url: 'https://graph.accountkit.com/v1.1/access_token'
+=======
+  app_id: '2070700909677265',
+  app_secret: '6231695a42e43e6a5af042e19a029cf3',
+  me_endpoint_base_url: 'https://graph.accountkit.com/v1.1/me',
+  token_exchange_base_url: 'https://graph.accountkit.com/v1.1access_token'
+>>>>>>> a4ade8132e741c0993fb33ba59605e0fd900ac16
 }
 
 accountkit.loadLogin = () => {
