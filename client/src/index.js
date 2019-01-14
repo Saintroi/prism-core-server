@@ -4,6 +4,7 @@ import App from "./App";
 import { BrowserRouter } from 'react-router-dom';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import auth from './auth';
 
 import 'tachyons';
 import './index.css';
@@ -11,7 +12,15 @@ import './index.css';
 import registerServiceWorker from './serviceWorker';
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
+  uri: "http://localhost:4000/graphql",
+  request: operation => {
+    operation.setContext(context => ({
+      headers: {
+        ...context.headers,
+        authorization: auth.getIdToken(),
+      },
+    }));
+  },
 });
 
 ReactDOM.render(
