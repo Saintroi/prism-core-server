@@ -1,4 +1,3 @@
 development.json
 test.json
-config/development.json
-default.json
+production.json

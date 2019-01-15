@@ -1,5 +1,4 @@
 import jwksClient from 'jwks-rsa';
-import config from 'config';
 
 const tokens = {}
 
@@ -15,7 +14,7 @@ tokens.client = jwksClient({
   }
 
   tokens.options = {
-    audience: config.get('auth0.clientid'),
+    aud: 'http://157.230.5.241',
     issuer: `https://prismcore.auth0.com/`,
     algorithms: ['RS256']
   };

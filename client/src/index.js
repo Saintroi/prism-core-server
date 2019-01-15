@@ -5,14 +5,16 @@ import { BrowserRouter } from 'react-router-dom';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import auth from './auth';
+import config from './config';
 
 import 'tachyons';
 import './index.css';
 
 import registerServiceWorker from './serviceWorker';
 
+
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: config.serverUrl + '/graphql',
   request: operation => {
     operation.setContext(context => ({
       headers: {

@@ -3,6 +3,7 @@ import { merge } from 'lodash';
 import user from './user';
 import jwt from 'jsonwebtoken';
 import tokens from '../utils/tokens';
+import config from 'config';
 
 
 const rootTypeDefs = gql`
@@ -41,7 +42,7 @@ const schema = new ApolloServer({
   typeDefs,
   resolvers,
    playground: {
-    endpoint: 'http://localhost:4000/graphql',
+    endpoint: config.get('app.url') + '/graphql',
     settings: {
       'editor.theme': 'dark'
     }
@@ -54,11 +55,11 @@ const schema = new ApolloServer({
         if(err) {
           return reject(err);
         }
-        resolve(decoded.email);
+        resolve(decoded);
       });
     });
 
-    return {
+     return {
       user
     };
   },

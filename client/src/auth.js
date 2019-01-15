@@ -1,16 +1,14 @@
 import auth0 from 'auth0-js';
-import config from 'config';
+import config from './config';
 
 class Auth {
   constructor() {
 
-    console.log(config.get('auth0'))
-
     this.auth0 = new auth0.WebAuth({
-      domain: config.get('auth0.domain'),
-      clientID: config.get('auth0.clientid'),
-      redirectUri: 'http://localhost:3000/callback',
-      audience: 'https://prismcore.auth0.com/userinfo',
+      domain: "prismcore.auth0.com",
+      clientID: "UFuQOeLyTA3p2rgsagyy1xuXkv8g3Tf9",
+      redirectUri: config.appUrl+'/callback',
+      audience: 'http://157.230.5.241',
       responseType: 'token id_token',
       scope: 'openid email'
     });
@@ -19,9 +17,16 @@ class Auth {
     this.logout = this.logout.bind(this);
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.authFlag = 'isLoggedIn';
+    this.tokenLoading = false;
+
   }
 
   login() {
+    this.auth0.authorize();
+  }
+
+  signIn() {
     this.auth0.authorize();
   }
 
@@ -44,31 +49,46 @@ class Auth {
 
   setSession(authResult) {
     this.idToken = authResult.idToken;
+    this.tokenLoading = true;
+  
     console.log(this.idToken);
-    // set the time that the id token will expire at
-    this.expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
+    localStorage.setItem(this.authFlag, JSON.stringify(true));
   }
 
   logout() {
     this.auth0.logout({
-      returnTo: 'http://localhost:3000',
-      clientID: config.get('auth0.clientid'),
+      returnTo: config.appUrl,
+      clientID: "UFuQOeLyTA3p2rgsagyy1xuXkv8g3Tf9",
+    });
+  }
+
+  signOut() {
+    localStorage.setItem(this.authFlag, JSON.stringify(false));
+    this.auth0.logout({
+      returnTo: config.appUrl,
+      clientID: 'UFuQOeLyTA3p2rgsagyy1xuXkv8g3Tf9',
     });
   }
 
   silentAuth() {
-    return new Promise((resolve, reject) => {
-      this.auth0.checkSession({}, (err, authResult) => {
-        if (err) return reject(err);
-        this.setSession(authResult);
-        resolve();
+    if(this.isAuthenticated()) {
+      return new Promise((resolve, reject) => {
+        this.auth0.checkSession({}, (err, authResult) => {
+          if (err) {
+            localStorage.removeItem(this.authFlag);
+            this.signOut();
+            return reject(err);
+          }
+          this.setSession(authResult);
+          resolve();
+        });
       });
-    });
+    }
   }
 
   isAuthenticated() {
     // Check whether the current time is past the token's expiry time
-    return new Date().getTime() < this.expiresAt;
+    return JSON.parse(localStorage.getItem(this.authFlag));
   }
 }
 

@@ -1,8 +1,11 @@
 const auth = {};
 
 auth.restrict = (async (_, query, context) => {
-    console.log("MEMES", context.user)
-    if (!context.user.email) throw new Error('Unauthorized');
+    const user = await context.user;
+    console.log("MEMES", user)
+    if (!user.email_verified){
+      throw new Error('Unauthorized - Please Verify Your Email Address With Auth0');
+    }
   });
 
 auth.restrictToAdmin = (async (_, query, context) => {
