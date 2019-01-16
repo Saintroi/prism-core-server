@@ -45,7 +45,8 @@ const schema = new ApolloServer({
     endpoint: config.get('app.url') + '/graphql',
     settings: {
       'editor.theme': 'dark'
-    }
+    },
+    introspection: true
   },
   context: ({ req }) => {
     // simple auth check on every request

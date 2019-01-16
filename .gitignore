@@ -2,5 +2,5 @@ development.json
 test.json
 production.json
 /build
-/node_modules
-/backend/node_modules
+/node_modules/
+/backend/node_modules/
