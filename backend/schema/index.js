@@ -41,6 +41,10 @@ const typeDefs = [
 const schema = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: error => {
+    console.log(error);
+    return new Error('Internal server error');
+  },
    playground: {
     endpoint: config.get('app.url') + '/graphql',
     settings: {

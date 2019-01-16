@@ -5,6 +5,7 @@
   "dependencies": {
     "apollo-boost": "^0.1.23",
     "apollo-client": "^2.4.8",
+    "apollo-link-error": "^1.1.5",
     "auth0-js": "^9.9.0",
     "auth0-lock": "^11.12.1",
     "cross-env": "^5.2.0",
@@ -22,7 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-build": "serve build -p 3000 &",
-    "deploy":"pm2 start ./server.sh --name prism-core-client",
+    "deploy": "pm2 start ./server.sh --name prism-core-client",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

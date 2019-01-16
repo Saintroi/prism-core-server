@@ -46,7 +46,9 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "start": "./node_modules/.bin/cross-env NODE_ENV=production NODE_PATH=./config  pm2 start ./server.js --interpreter ./node_modules/babel-cli/bin/babel-node.js --name prism-core-server",
-    "start:dev": "./node_modules/.bin/cross-env NODE_ENV=development NODE_PATH=./config nodemon ./server.js --exec babel-node"
+    "deploy": "./node_modules/.bin/cross-env NODE_ENV=production NODE_PATH=./config  pm2 start ./server.js --interpreter ./node_modules/babel-cli/bin/babel-node.js --name prism-core-server",
+    "start:dev": "./node_modules/.bin/cross-env NODE_ENV=development NODE_PATH=./config nodemon ./server.js --exec babel-node",
+    "start": "./node_modules/.bin/cross-env NODE_ENV=production NODE_PATH=./config node ./server.js --interpreter ./node_modules/babel-cli/bin/babel-node.js"
   }
+
 }
