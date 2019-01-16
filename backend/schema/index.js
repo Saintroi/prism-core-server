@@ -62,7 +62,7 @@ const schema = new ApolloServer({
         }
         resolve(decoded);
       });
-    });
+    }) .catch(err => console.log(err));
 
      return {
       user
