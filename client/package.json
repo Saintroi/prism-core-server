@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-build": "serve build -p 3000 &",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
