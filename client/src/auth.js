@@ -44,7 +44,11 @@ class Auth {
         this.setSession(authResult);
         resolve();
       });
-    })
+    }) 
+    .catch(err => {
+      console.log(err);
+      this.signOut();
+    });
   }
 
   setSession(authResult) {
