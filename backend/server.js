@@ -1,9 +1,11 @@
 import express from 'express';
 import server from './schema';
-import configMiddleware from './middleware/config-middleware';
+import auth from './middleware/restrict';
 import configRoutes from './routes/config-routes';
 
 const app = express();
+
+app.use(auth.bindUser);
 
 // Middleware: GraphQL
 server.applyMiddleware({
