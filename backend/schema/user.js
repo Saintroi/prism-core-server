@@ -48,7 +48,7 @@ const resolvers = {
     users: utils.wrap(auth.restrict, api.user.getAll)
   },
   Mutation: {
-    createUser: utils.wrap(auth.restrictToAdmin,api.user.createUser)
+    createUser: utils.wrap(auth.restrict,api.user.createUser)
   },
   User: {
     name: user => `${user.firstName} ${user.lastName}`,

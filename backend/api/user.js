@@ -33,7 +33,6 @@ userApi.getAll = (_, args) => userApi.fetchAll(args);
  * @param {Object} context
  */
 userApi.createUser = (async (_, args) => {
-
   return userApi.createOne(args.input);
 });
 

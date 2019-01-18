@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from "./App";
 import { BrowserRouter } from 'react-router-dom';
 import ApolloClient from "apollo-boost";
-import { onError } from 'apollo-link-error'
 import { ApolloProvider } from "react-apollo";
 import auth from './auth';
 import config from './config';

@@ -4,6 +4,7 @@ import user from './user';
 import jwt from 'jsonwebtoken';
 import tokens from '../utils/tokens';
 import config from 'config';
+import auth from '../middleware/restrict'
 
 
 const rootTypeDefs = gql`
