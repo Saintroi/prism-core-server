@@ -18,6 +18,7 @@ class Auth {
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
     this.authFlag = 'isLoggedIn';
+    this.idTokenFlag = 'idToken';
     this.tokenLoading = false;
 
   }
@@ -31,7 +32,7 @@ class Auth {
   }
 
   getIdToken() {
-    return this.idToken;
+    return localStorage.getItem(this.idTokenFlag);
   }
 
   handleAuthentication() {
@@ -55,7 +56,7 @@ class Auth {
     this.idToken = authResult.idToken;
     this.tokenLoading = true;
   
-    console.log(this.idToken);
+    localStorage.setItem(this.idTokenFlag, this.idToken);
     localStorage.setItem(this.authFlag, JSON.stringify(true));
   }
 

@@ -32,7 +32,7 @@ auth.bindUser = (async(decoded) =>{
   for (var user in dbusers){
     if (user.email === decoded.email) {
       user.email_verified = decoded.email_verified;
-      return user;
+      return user; 
     };
   };
   return null;
