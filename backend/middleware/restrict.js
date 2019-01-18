@@ -1,11 +1,13 @@
+import jwt from 'jsonwebtoken';
 import api from '../api'
+import tokens from '../utils/tokens';
 
 const auth = {};
 
 auth.restrict = (async (_, query, context) => {
-    const user = await context.user;
+    const { tokenUser } = await context;
     //console.log("MEMES", user)
-    if (!user.email_verified){
+    if (!tokenUser.email_verified) {
       throw new Error('Unauthorized - Please Verify Your Email Address With Auth0');
     }
   });
@@ -17,26 +19,38 @@ auth.restrictToAdmin = (async (_, query, context) => {
 
 auth.adminOnly = (req, res, next) => {
     if (req.user.admin) next();
-  
+
     return res.status(401).send('Unauthorized.');
   };
-
 
 auth.getUserFromDb = (context) => {
   return api.user.getOneFromEmail({email: context.user.email}, context);
 }
 
-auth.bindUser = (async(decoded) =>{
-  var dbusers = await api.user.fetchAll();
-  console.log('HERE:' + dbusers);
-  for (var user in dbusers){
-    if (user.email === decoded.email) {
-      user.email_verified = decoded.email_verified;
-      return user; 
-    };
-  };
-  return null;
-});
+auth.verifyToken = (token) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, tokens.getKey, tokens.options, (err, decoded) => {
+      err ? reject(err) : resolve(decoded);
+    });
+  });
+};
 
+auth.bindUser = async (req, res, next) => {
+  if (req.headers.authorization) {
+    try {
+      const tokenUser = await auth.verifyToken(req.headers.authorization);
+      const databaseUser = await api.user.fetchOne({ email: tokenUser.email });
+
+      req.tokenUser = tokenUser;
+      if (databaseUser) {
+        req.user = databaseUser.toJSON();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  next();
+};
 
 export default auth;

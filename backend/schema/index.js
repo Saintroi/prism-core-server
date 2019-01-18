@@ -54,18 +54,9 @@ const schema = new ApolloServer({
   },
   context: ({ req }) => {
     // simple auth check on every request
-    const token = req.headers.authorization;
-    const user = new Promise((resolve, reject) => {
-      jwt.verify(token, tokens.getKey, tokens.options, (err, decoded) => {
-        if(err) {
-          return reject(err);
-        }
-        resolve(decoded);
-      });
-    }) .catch(err => console.log(err));
-
-     return {
-      user
+    return {
+      user: req.user,
+      tokenUser: req.tokenUser,
     };
   },
 });
