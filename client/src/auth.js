@@ -20,6 +20,7 @@ class Auth {
     this.authFlag = 'isLoggedIn';
     this.idTokenFlag = 'idToken';
     this.tokenLoading = false;
+    this.adminFlag = "isAdmin";
 
   }
 
@@ -32,9 +33,14 @@ class Auth {
   }
 
   getIdToken() {
-    return localStorage.getItem(this.idTokenFlag);
+    try{
+      return localStorage.getItem(this.idTokenFlag);
+    }
+    catch (error){
+      this.signOut()
+    }
   }
-
+  
   handleAuthentication() {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, authResult) => {
@@ -60,6 +66,14 @@ class Auth {
     localStorage.setItem(this.authFlag, JSON.stringify(true));
   }
 
+  setAdmin() {
+    localStorage.setItem(this.adminFlag, JSON.stringify(true));
+  }
+
+  isAdmin() {
+    return JSON.parse(localStorage.getItem(this.adminFlag));
+  }
+
   logout() {
     this.auth0.logout({
       returnTo: config.appUrl,
@@ -81,6 +95,7 @@ class Auth {
         this.auth0.checkSession({}, (err, authResult) => {
           if (err) {
             localStorage.removeItem(this.authFlag);
+            localStorage.removeItem(this.adminFlag);
             this.signOut();
             return reject(err);
           }

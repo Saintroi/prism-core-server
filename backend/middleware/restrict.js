@@ -6,7 +6,6 @@ const auth = {};
 
 auth.restrict = (async (_, query, context) => {
     const { tokenUser } = await context;
-    //console.log("MEMES", user)
     if (!tokenUser.email_verified) {
       throw new Error('Unauthorized - Please Verify Your Email Address With Auth0');
     }

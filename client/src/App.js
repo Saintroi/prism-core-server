@@ -7,7 +7,34 @@ import Callback from './components/callback';
 import './App.css';
 import auth from './auth'
 import GuardedRoute from './components/guardedRoute';
+import styled from 'styled-components';
 
+const AppWrapper = styled.div`
+  background-color: #F4F4F4
+  display: grid;
+  grid-template-areas:
+    "nav head"
+    "nav content";
+
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 50px 1fr;
+  grid-gap: 10px;
+  
+  height: 100vh;
+
+  @media only screen and (max-width: 768px) {
+    grid-template-areas:
+      "nav"
+      "head"
+      "content"
+
+    grid-template-columns: 1fr 200px;
+    grid-template-rows:
+      minmax(75px, auto)
+      1fr minmax(75px, auto)
+      auto;
+  }
+`;
 
 
 class App extends Component {
@@ -31,12 +58,12 @@ class App extends Component {
   render() {
     if (auth.tokenLoading || auth.isAuthenticated) {
     return (
-      <div>
+      <AppWrapper>
         <Nav />
         <GuardedRoute exact path='/' component={ListUser} />
         <GuardedRoute exact path='/create' component={CreateUser} />
         <Route exact path='/callback' component={Callback} />
-      </div>
+      </AppWrapper>
     );
   }
   return 'Loading';
