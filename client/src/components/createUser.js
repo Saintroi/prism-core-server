@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import auth from '../auth';
 
 
@@ -20,10 +20,19 @@ mutation addUser($input: UserInput!){
  }
 `
 
+const SlideAnimation = keyframes`
+  0% { margin-left: 100%; }
+  50% { margin-left: 50%; }
+  100% { margin-left: 0; }
+`;
+
+
 const FormWrapper = styled.div`
-  padding: 1px 16px;
   height: 100%;
   grid-area: content;
+  grid-column: -1;
+  grid-row: 2;
+  animation: ${SlideAnimation} 300ms;
 
   @media screen and (max-width: 768px) {
     width: 100%;
@@ -48,7 +57,7 @@ const TextInput = styled.input`
 const ItemLabel = styled.label`
   display: inline-block;
   text-align: Right;
-  width: 30%
+  width: 15%
   height: auto;
 `;
 
@@ -67,7 +76,7 @@ const CheckInput = styled.input`
   -webkit-transform: scale(1.5); /* Safari and Chrome */
   -o-transform: scale(1.5); /* Opera */
   vertical-align: middle;
-  width: 50%;
+  width: 65%;
   padding: 5px;
   float: right;
 `;
@@ -79,7 +88,7 @@ const AddBtn = styled.button`
   height: auto;
   font-size: 16px;
   text-transform: uppercase;
-  margin-left: 40%;
+  margin-left: 30%;
 `;
 
 class CreateUser extends Component {

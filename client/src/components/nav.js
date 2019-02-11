@@ -65,10 +65,19 @@ const NavLink = styled.li`
 
   @media screen and (max-width: 768px) {
     display: inline-flex
-    height: 50%;
+    height: 100%;
     width: auto;
     margin-bottom: 10px;
     border-width: 0px;
+    justify-content: center;
+
+    &:hover {
+      text-decoration: none;
+      border-color: #00467E;
+      border-width: 3px 0px 0px 0px;
+      background-color: #559FD3
+  
+    }
   }
 `;
 
@@ -85,8 +94,8 @@ const StyledLink = styled(Link)`
   }
 
   img{
-    width: 15%
-    height: 15%
+    width: 2.5vmin
+    height: 2.5vmin
   }
 
 `;
@@ -101,6 +110,14 @@ const LogButton = styled.button`
   margin-bottom: 10px;
   margin-left: 5px;
   margin-top: auto;
+
+  @media screen and (max-width: 768px) {
+    display: inline-flex
+    height: 80%;
+    width: auto;
+    margin-bottom: 10px;
+    margin-left: auto;
+  }
 
 `;
 

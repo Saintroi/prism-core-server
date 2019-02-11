@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import Nav from './components/nav';
 import ListUser from './components/listUser';
-import CreateUser from './components/createUser';
 import Callback from './components/callback';
 import './App.css';
 import auth from './auth'
@@ -18,7 +17,9 @@ const AppWrapper = styled.div`
 
   grid-template-columns: 200px 1fr;
   grid-template-rows: 50px 1fr;
+  grid-auto-columns: 300px;
   grid-gap: 10px;
+  transition: 2s;
   
   height: 100vh;
 
@@ -26,13 +27,10 @@ const AppWrapper = styled.div`
     grid-template-areas:
       "nav"
       "head"
-      "content"
+      "content";
 
-    grid-template-columns: 1fr 200px;
-    grid-template-rows:
-      minmax(75px, auto)
-      1fr minmax(75px, auto)
-      auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: 8vh 5vh 1fr;
   }
 `;
 
@@ -61,7 +59,6 @@ class App extends Component {
       <AppWrapper>
         <Nav />
         <GuardedRoute exact path='/' component={ListUser} />
-        <GuardedRoute exact path='/create' component={CreateUser} />
         <Route exact path='/callback' component={Callback} />
       </AppWrapper>
     );

@@ -7,11 +7,16 @@ tokens.client = jwksClient({
   });
 
   tokens.getKey = (header, cb) => {
+      try{
       tokens.client.getSigningKey(header.kid, function(err, key) {
           var signingKey = key.publicKey || key.rsaPublicKey;
           cb(null, signingKey);
       });
-  }
+    }
+    catch (error){
+        console.log(error);
+    }
+    }
 
   tokens.options = {
     aud: 'http://157.230.5.241',
