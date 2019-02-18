@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import auth from '../auth';
-import styled, { keyframes } from 'styled-components';
-import createIcon from '../img/add-contact.svg';
+import styled from 'styled-components';
 import PlusButton from './Animations/animatedPlusBtn';
 import LoadingDots from './Animations/animatedLoading';
-import CreateUser from './createUser';
 
 
 const LIST_USERS = gql`
@@ -57,8 +55,8 @@ const UserCols = styled.div`
   grid-area: content;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  grid-template-rows: 2%;
-  grid-auto-rows: 8%;
+  grid-template-rows: .02fr;
+  grid-auto-rows: .08fr;
   grid-gap:10px
 
   @media screen and (max-width: 768px) {
@@ -76,7 +74,7 @@ const UserRow = styled.div`
   align-items: center;
   display: grid;
   grid-template-columns: 2fr 2fr 3fr 2fr 2fr 1fr;
-  grid-template-rows: 100%;
+  grid-template-rows: 1fr;
   grid-gap: 5px;
   transition: background-color 300ms;
   font-family: Helvetica, Arial, PT Sans Narrow, Arial Narrow, Arial, Helvetica, sans-serif;
@@ -118,6 +116,7 @@ const SearchBar = styled.input`
   width: 80%;
 `;
 
+
 function compare(a,b) {
   if (a.lastName < b.lastName)
     return -1;
@@ -129,9 +128,15 @@ function compare(a,b) {
 
 class ListUser extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.handleSearchChange = this.handleSearchChange.bind(this)
+    this.toggleCreate = props.toggleCreate.bind(this)
+  }
+
   state = {
     searchQuery: '',
-    showCreate: false
   }
 
   createUserClick = () => {
@@ -180,10 +185,10 @@ class ListUser extends Component {
           return (
             <React.Fragment>
             <HeadWrap>
-              <SearchBar onChange={this.handleSearchChange.bind(this)} placeholder=" Search by name or cell #..." autoFocus />
+              <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus />
               {
               (auth.isAdmin())? 
-              <ButtonWrap><PlusButton click={this.createUserClick}/> </ButtonWrap>: null
+              <ButtonWrap><PlusButton click={this.toggleCreate}/> </ButtonWrap>: null
               }
             </HeadWrap>
             <UserCols>
@@ -210,7 +215,6 @@ class ListUser extends Component {
             );
           }}
         </Query>
-        {this.state.showCreate && <CreateUser></CreateUser>}
       </React.Fragment>
       );
     }

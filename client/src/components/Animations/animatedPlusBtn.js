@@ -43,7 +43,6 @@ const Bar = styled.div`
 class PlusButton extends Component {
     constructor (props) {
         super(props)
-            
         this.click = props.click;
       }
 

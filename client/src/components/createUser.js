@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-import styled, {keyframes} from 'styled-components';
+import styled from 'styled-components';
 import auth from '../auth';
 
-
+// Queries
 const ADD_USER = gql`
 
 mutation addUser($input: UserInput!){
@@ -20,25 +20,12 @@ mutation addUser($input: UserInput!){
  }
 `
 
-const SlideAnimation = keyframes`
-  0% { margin-left: 100%; }
-  50% { margin-left: 50%; }
-  100% { margin-left: 0; }
-`;
-
+// Styles
 
 const FormWrapper = styled.div`
   height: 100%;
-  grid-area: content;
-  grid-column: -1;
-  grid-row: 2;
-  animation: ${SlideAnimation} 300ms;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    height: auto;
-    position: relative;
-}
+  width: 100%;
+  background-color: white;
 `;
 
 const InputWrapper = styled.div`
@@ -50,14 +37,14 @@ const TextInput = styled.input`
   display: inline-block;
   margin-left: 20px;
   height: auto;
-  width: 60%;
+  width: 70%;
   padding: 5px;
 `;
 
 const ItemLabel = styled.label`
   display: inline-block;
-  text-align: Right;
-  width: 15%
+  text-align: Center;
+  width: 20%
   height: auto;
 `;
 
@@ -76,7 +63,7 @@ const CheckInput = styled.input`
   -webkit-transform: scale(1.5); /* Safari and Chrome */
   -o-transform: scale(1.5); /* Opera */
   vertical-align: middle;
-  width: 65%;
+  width: 50%;
   padding: 5px;
   float: right;
 `;
@@ -85,13 +72,14 @@ const AddBtn = styled.button`
   background: #00467E;
   color: white;
   width: 30%;
-  height: auto;
+  height: 100%;
   font-size: 16px;
   text-transform: uppercase;
   margin-left: 30%;
 `;
 
 class CreateUser extends Component {
+
     render(){
         return(
         <Mutation mutation={ADD_USER} onCompleted={() => window.location.href="/" }>
