@@ -9,7 +9,8 @@ const Circle = styled.div`
     border-width: 1px;
     border-color: #00467E;
     background-color: transparent;
-    position: relative;
+    position: absolute;
+    transform: ${props => props.move ? "rotate(45deg)" : ""};
 
 `;
 
@@ -19,20 +20,24 @@ const Bar = styled.div`
     background-color: #00467E;
     transition: transform 300ms;
 
-    transform: ${props => props.active ? "rotate(45deg)" : ""};
 
     &.horizontal {
-        width: 60%;
-        height: 5%;
+        width: 20px;
+        height: 3px;
         top: 45%;
-        left: 20%;
+        left: 50%;
+        margin-left: -10px;
+        top: 50%;
+        margin-top: -2.5px;
     }
 
     &.vertical {
-        width: 5%;
-        height: 60%;
-        left: 45%;
-        top: 20%;
+        width: 3px;
+        height: 20px;
+        left: 50%;
+        margin-left: -2.5px;
+        top: 50%;
+        margin-top: -10px;
     }
 
 
@@ -47,19 +52,19 @@ class PlusButton extends Component {
       }
 
     state = {
-        isActive: false
+        move: this.props.move
     }
 
     handleClick = () => {
-        this.setState({isActive:!this.state.isActive})
+        this.setState({move:!this.state.move})
         this.click();
     }
 
     render() {
       return (
-        <Circle onClick={this.handleClick}>
-            <Bar className="horizontal" active={this.state.isActive}></Bar>
-            <Bar className="vertical" active={this.state.isActive}></Bar>
+        <Circle onClick={this.handleClick} move={this.props.move}>
+            <Bar className="horizontal"></Bar>
+            <Bar className="vertical"></Bar>
         </Circle>
       )
     }

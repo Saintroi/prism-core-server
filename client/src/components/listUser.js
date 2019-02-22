@@ -4,8 +4,8 @@ import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import auth from '../auth';
 import styled from 'styled-components';
-import PlusButton from './Animations/animatedPlusBtn';
 import LoadingDots from './Animations/animatedLoading';
+import CreateUser from './createUser';
 
 
 const LIST_USERS = gql`
@@ -17,6 +17,7 @@ const LIST_USERS = gql`
       lastName
       email
       cellPhone
+      officePhone
       title
       location
     }
@@ -102,12 +103,7 @@ const HeadWrap = styled.div`
 
 `;
 
-const ButtonWrap = styled.div`
-  width: 5%;
-  height: 4vmin;
-  margin-top: .75%;
-  margin-left: 2%;
-`;
+
 
 const SearchBar = styled.input`
   margin: 5px;
@@ -132,7 +128,6 @@ class ListUser extends Component {
     super(props);
 
     this.handleSearchChange = this.handleSearchChange.bind(this)
-    this.toggleCreate = props.toggleCreate.bind(this)
   }
 
   state = {
@@ -184,12 +179,9 @@ class ListUser extends Component {
     
           return (
             <React.Fragment>
+              <CreateUser></CreateUser>
             <HeadWrap>
               <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus />
-              {
-              (auth.isAdmin())? 
-              <ButtonWrap><PlusButton click={this.toggleCreate}/> </ButtonWrap>: null
-              }
             </HeadWrap>
             <UserCols>
 

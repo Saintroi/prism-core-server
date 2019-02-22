@@ -12,7 +12,7 @@ const NavWrap = styled.div`
   background-color: white;
   margin: 0;
   padding: 0;
-  width: 200px;
+  width: 150px;
   position fixed;
   height: 100%;
   overflow: auto;
