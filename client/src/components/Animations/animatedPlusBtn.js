@@ -11,6 +11,8 @@ const Circle = styled.div`
     background-color: transparent;
     position: absolute;
     transform: ${props => props.move ? "rotate(45deg)" : ""};
+    transition: transform 300ms;
+
 
 `;
 
@@ -18,8 +20,6 @@ const Bar = styled.div`
     margin: 0 auto;
     position: absolute;
     background-color: #00467E;
-    transition: transform 300ms;
-
 
     &.horizontal {
         width: 20px;

@@ -3,11 +3,10 @@ import {Route, withRouter} from 'react-router-dom';
 import Nav from './components/nav';
 import ListUser from './components/listUser';
 import Callback from './components/callback';
-import CreateUser from './components/createUser';
 import './App.css';
 import auth from './auth'
 import GuardedRoute from './components/guardedRoute';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 // Styles  
 
@@ -44,10 +43,6 @@ const Grid = styled.div`
 // JSX
 
 class App extends Component {
-
-  constructor(props){
-    super(props)
-  }
 
   state = {
     tryingSilent: true,

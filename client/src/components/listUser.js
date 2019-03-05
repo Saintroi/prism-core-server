@@ -38,7 +38,7 @@ const CURRENT_USER = gql`
 const UserHeader = styled.div`
   color: #8298A3;
   display: grid;
-  grid-template-columns: 2fr 2fr 3fr 2fr 2fr 1fr;
+  grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr;
   grid-template-rows: 100%;
   align-items: end;
 
@@ -74,7 +74,7 @@ const UserRow = styled.div`
   text-align: center;
   align-items: center;
   display: grid;
-  grid-template-columns: 2fr 2fr 3fr 2fr 2fr 1fr;
+  grid-template-columns: 2fr 3fr 2fr 2fr 2fr 1fr;
   grid-template-rows: 1fr;
   grid-gap: 5px;
   transition: background-color 300ms;
@@ -169,8 +169,11 @@ class ListUser extends Component {
         }}
         </Query>
 
-      <Query query= {LIST_USERS}>
-        {({ loading, error, data}) => {
+      <Query 
+        query = {LIST_USERS} 
+        pollInterval={60000}
+      >
+        {({ loading, error, data, refetch}) => {
           if (loading) return <LoadingDots></LoadingDots>;
           if (error){
             console.log(error.message)
@@ -179,7 +182,7 @@ class ListUser extends Component {
     
           return (
             <React.Fragment>
-              <CreateUser></CreateUser>
+              <CreateUser queryRefresh = {() => refetch()}></CreateUser>
             <HeadWrap>
               <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus />
             </HeadWrap>

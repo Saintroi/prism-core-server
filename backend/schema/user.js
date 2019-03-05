@@ -39,6 +39,10 @@ const typeDefs = gql`
     createUser (
       input: UserInput
     ): User
+
+    updateUser(
+      input: UserInput
+    ): User
   }
 `;
 
@@ -48,7 +52,8 @@ const resolvers = {
     users: utils.wrap(auth.restrict, api.user.getAll)
   },
   Mutation: {
-    createUser: utils.wrap(auth.restrictToAdmin,api.user.createUser)
+    createUser: utils.wrap(auth.restrictToAdmin,api.user.createUser),
+    updateUser: utils.wrap(auth.restrictToAdmin, api.user.update)
   },
   User: {
     name: user => `${user.firstName} ${user.lastName}`,

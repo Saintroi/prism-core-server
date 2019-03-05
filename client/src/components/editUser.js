@@ -1,17 +1,39 @@
 import React, { Component } from 'react';
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import PlusButton from './Animations/animatedPlusBtn';
+import formik from 'formik';
 import auth from '../auth';
+
+// Animations
+const slideAnimate = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: none;
+    }
+`;
+
+const btnUp = keyframes`
+  from {
+    transform: translate(0,0);
+  }
+
+  to {
+    transform: translate(100%,);
+    }
+`;
 
 
 // Queries
-const ADD_USER = gql`
+const UPDATE_USER = gql`
 
-mutation addUser($input: UserInput!){
+mutation updateUser($input: UserInput!){
   
-  createUser(input: $input){
+  updateUser(input: $input){
    firstName
    lastName
    email
@@ -126,7 +148,7 @@ const AddBtn = styled.button`
 `;
  // {...props} toggleCreate={this.toggleCreate} 
 
-class CreateUser extends Component {
+class EditUser extends Component {
 
   constructor(props) {
     super(props);
@@ -173,7 +195,7 @@ class CreateUser extends Component {
         return(
           <React.Fragment>
             <OpenBtn move={this.state.createVisible}><PlusButton click={this.toggleCreate} move={this.state.createVisible}></PlusButton></OpenBtn>
-            <Mutation mutation={ADD_USER} onCompleted={this.props.queryRefresh}>
+            <Mutation mutation={ADD_USER} onCompleted={() => window.location.href="/" }>
             {(createUser, { data, loading, error }) => (
               <FormWrapper ref={this.setWrapperRef} show={this.state.createVisible}>
                 {
@@ -311,4 +333,4 @@ class CreateUser extends Component {
           }
 }
 
-export default CreateUser;
+export default EditUser;
