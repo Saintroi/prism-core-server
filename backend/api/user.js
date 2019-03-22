@@ -5,6 +5,9 @@ const userApi = {};
 userApi.fetchOne = args => models.User.where(args).fetch();
 userApi.fetchAll = args => models.User.where(args).orderBy('last_name').fetchAll();
 userApi.createOne = args => new models.User(args).save();
+userApi.deleteOne = args => models.User.where(args).destroy();
+
+
 
 /**
  * Retrives the currently logged in user using their id from context
@@ -42,8 +45,8 @@ userApi.createUser = (async (_, args) => {
  * @param {Object} args
  * @param {Object} context
  */
-userApi.update = (async (_, args) => {
-  const updates = Object.assign({}, args);
+userApi.updateUser = (async (_, args) => {
+  const updates = Object.assign({}, args).input;
   const { id } = updates;
   delete updates.id;
 
@@ -52,6 +55,17 @@ userApi.update = (async (_, args) => {
 
   const user = await userApi.fetchOne({ id });
   return user.set(updates).save();
+});
+
+userApi.deleteUser = (async (_, args) => {
+  const info = Object.assign({}, args).input;
+  const { id } = info;
+  delete info.id;
+
+  // TODO - change validation to use main validation object
+  if (!id) throw new Error('A valid id is required to delete a user.');
+
+  return userApi.deleteOne({ id });
 });
 
 

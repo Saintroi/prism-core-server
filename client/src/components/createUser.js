@@ -161,7 +161,6 @@ class CreateUser extends Component {
   }
 
   handleClickOutside(event) {
-    console.log("EVENT");
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       this.setState({
         createVisible: false

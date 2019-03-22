@@ -6,6 +6,7 @@ import auth from '../auth';
 import styled from 'styled-components';
 import LoadingDots from './Animations/animatedLoading';
 import CreateUser from './createUser';
+import EditUser from './editUser';
 
 
 const LIST_USERS = gql`
@@ -20,6 +21,8 @@ const LIST_USERS = gql`
       officePhone
       title
       location
+      type
+      admin
     }
   }
 `
@@ -203,6 +206,7 @@ class ListUser extends Component {
                     <span>{ user.officePhone }</span>
                     <span>{ user.cellPhone }</span>
                     <span>{ user.location }</span>
+                    <EditUser user = {user} queryRefresh = {() => refetch()}></EditUser>
                     </UserRow>
                   ))}
               </UserCols>

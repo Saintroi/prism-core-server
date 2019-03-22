@@ -24,6 +24,7 @@ const typeDefs = gql`
     users (firstName: String, lastName: String): [User]
   }
   input UserInput{
+    id: Int
     firstName: String!
     lastName: String!
     email: String!
@@ -43,6 +44,10 @@ const typeDefs = gql`
     updateUser(
       input: UserInput
     ): User
+
+    deleteUser(
+      input: UserInput
+    ): User
   }
 `;
 
@@ -53,7 +58,9 @@ const resolvers = {
   },
   Mutation: {
     createUser: utils.wrap(auth.restrictToAdmin,api.user.createUser),
-    updateUser: utils.wrap(auth.restrictToAdmin, api.user.update)
+    updateUser: utils.wrap(auth.restrictToAdmin, api.user.updateUser),
+    deleteUser: utils.wrap(auth.restrictToAdmin, api.user.deleteUser)
+
   },
   User: {
     name: user => `${user.firstName} ${user.lastName}`,

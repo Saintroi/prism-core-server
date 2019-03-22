@@ -9,8 +9,11 @@ tokens.client = jwksClient({
   tokens.getKey = (header, cb) => {
       try{
       tokens.client.getSigningKey(header.kid, function(err, key) {
-          var signingKey = key.publicKey || key.rsaPublicKey;
-          cb(null, signingKey);
+        var signingKey = null;
+          if(key){
+             signingKey = key.publicKey || key.rsaPublicKey;
+          }
+             cb(null, signingKey);
       });
     }
     catch (error){
