@@ -34,6 +34,7 @@ Hosted on Digital Ocean using PM2:
 
 
 prod deploy instructions:
+```
   cd into /srv/prismcore
   git pull
   pm2 list
@@ -45,3 +46,4 @@ prod deploy instructions:
   yarn
   yarn build
   yarn deploy
+```
