@@ -163,9 +163,10 @@ class EditUser extends Component {
     this.state = {
       createVisible: false,
       user: this.props.user,
-      currUser: this.props.currUser
+      currUserId: auth.getId()
     };
-    console.log(this.state.user);
+    //console.log(this.state.user);
+    //console.log(this.state.currUserId);
 
   }
 
@@ -365,7 +366,7 @@ class EditUser extends Component {
               {error && <p>Error :( Please try again</p>}
             
           </form>
-          {(auth.isAdmin() && (this.state.user.id !== this.state.currUser.id)) ?
+          {(auth.isAdmin() && (this.state.user.id !== this.state.currUserId)) ?
             <Mutation mutation={DELETE_USER} onCompleted={this.props.queryRefresh}>
               {(deleteUser, { data, loading, error }) => (
                 <DeleteBtn

@@ -131,11 +131,15 @@ class ListUser extends Component {
     super(props);
 
     this.handleSearchChange = this.handleSearchChange.bind(this)
-    this.currUser = null;
+    this._search = HTMLInputElement;
   }
 
   state = {
     searchQuery: '',
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this._search.focus();
   }
 
   createUserClick = () => {
@@ -156,6 +160,7 @@ class ListUser extends Component {
 
     return newUsers.sort(compare);
   }
+/* supposed to remove item from cache, but not needed
 
   updateCache = async (cache, {data: { delUser } }) => {
     const { users } = cache.readQuery({ query: LIST_USERS });
@@ -165,6 +170,7 @@ class ListUser extends Component {
       data: { users: newUsers}
     });
   }
+  */
 
 
   render(){
@@ -177,8 +183,8 @@ class ListUser extends Component {
             if(error.message === "GraphQL error: jwt malformed") return auth.signOut();
             return <p>{error.message}</p>;
           }
-          this.currUser = data.me;
           if(data.me.admin) auth.setAdmin();
+          auth.setId(data.me.id);
           return(<div></div>);
         }}
         </Query>
@@ -198,7 +204,7 @@ class ListUser extends Component {
             <React.Fragment>
               <CreateUser queryRefresh = {() => refetch()}></CreateUser>
             <HeadWrap>
-              <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus />
+              <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus={true} ref={c => (this._search = c)}/>
             </HeadWrap>
             <UserCols>
 
@@ -217,7 +223,7 @@ class ListUser extends Component {
                     <span>{ user.officePhone }</span>
                     <span>{ user.cellPhone }</span>
                     <span>{ user.location }</span>
-                    <EditUser user = {user} queryRefresh = {() => refetch()} currUser = {this.currUser}></EditUser>
+                    <EditUser user = {user} queryRefresh = {() => refetch()}></EditUser>
                     </UserRow>
                   ))}
               </UserCols>

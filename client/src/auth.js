@@ -21,6 +21,7 @@ class Auth {
     this.idTokenFlag = 'idToken';
     this.tokenLoading = false;
     this.adminFlag = "isAdmin";
+    this.currUserId = null;
 
   }
 
@@ -69,9 +70,17 @@ class Auth {
   setAdmin() {
     localStorage.setItem(this.adminFlag, JSON.stringify(true));
   }
-
+  
   isAdmin() {
     return JSON.parse(localStorage.getItem(this.adminFlag));
+  }
+
+  setId(id) {
+    localStorage.setItem(this.currUserId, JSON.stringify(id));
+  }
+
+  getId() {
+    return JSON.parse(localStorage.getItem(this.currUserId));
   }
 
   logout() {
