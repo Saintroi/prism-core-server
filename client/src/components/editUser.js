@@ -357,7 +357,7 @@ class EditUser extends Component {
                     <CheckInput
                       type="checkbox"
                       ref={node => this.admin = node}
-                      value = {this.state.user.admin || ''}
+                      checked = {this.state.user.admin }
                       onChange= {this.updateInputValue('admin')}
                     ></CheckInput>
                     </InputWrapper>
