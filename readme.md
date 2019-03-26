@@ -26,3 +26,21 @@ Mutation example:
     name
   }
 } ```
+
+
+
+Hosted on Digital Ocean using PM2:
+
+
+prod deploy instructions:
+  cd into /srv/prismcore
+  git pull
+  pm2 list
+  pm2 delete all
+  cd backend
+  yarn
+  yarn deploy
+  cd ../client
+  yarn
+  yarn build
+  yarn deploy

@@ -131,6 +131,7 @@ class ListUser extends Component {
     super(props);
 
     this.handleSearchChange = this.handleSearchChange.bind(this)
+    this.currUser = null;
   }
 
   state = {
@@ -176,6 +177,7 @@ class ListUser extends Component {
             if(error.message === "GraphQL error: jwt malformed") return auth.signOut();
             return <p>{error.message}</p>;
           }
+          this.currUser = data.me;
           if(data.me.admin) auth.setAdmin();
           return(<div></div>);
         }}
@@ -215,7 +217,7 @@ class ListUser extends Component {
                     <span>{ user.officePhone }</span>
                     <span>{ user.cellPhone }</span>
                     <span>{ user.location }</span>
-                    <EditUser user = {user} queryRefresh = {() => refetch()} update = {this.updateCache}></EditUser>
+                    <EditUser user = {user} queryRefresh = {() => refetch()} currUser = {this.currUser}></EditUser>
                     </UserRow>
                   ))}
               </UserCols>
