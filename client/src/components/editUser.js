@@ -250,6 +250,7 @@ class EditUser extends Component {
                 <ItemLabel> First: </ItemLabel>
                 <TextInput
                   type="text"
+                  readOnly = {!auth.isAdmin()}
                   autoFocus
                   required
                   placeholder='First name of user'
@@ -262,6 +263,7 @@ class EditUser extends Component {
                 <ItemLabel> Last: </ItemLabel>
                 <TextInput
                   type="text"
+                  readOnly = {!auth.isAdmin()}
                   required
                   placeholder='Last name of user'
                   value={this.state.user.lastName || ''}
@@ -273,6 +275,7 @@ class EditUser extends Component {
                 <ItemLabel> Email: </ItemLabel>
                 <TextInput
                   type="email"
+                  readOnly = {!auth.isAdmin()}
                   required
                   placeholder='first.last@prismsystems.com'
                   value={this.state.user.email || ''}
@@ -284,6 +287,7 @@ class EditUser extends Component {
                 <ItemLabel> Cell: </ItemLabel>
                 <TextInput
                   type="tel"
+                  readOnly = {!auth.isAdmin()}
                   min="1"
                   max="10"
                   placeholder='(XXX) XXX-XXXX'
@@ -296,6 +300,7 @@ class EditUser extends Component {
                 <ItemLabel> Office: </ItemLabel>
                 <TextInput
                   type="tel"
+                  readOnly = {!auth.isAdmin()}
                   min="1"
                   max="10"
                   placeholder='(XXX) XXX-XXXX'
@@ -308,6 +313,7 @@ class EditUser extends Component {
                 <ItemLabel> Title: </ItemLabel>
                 <TextInput
                   type="text"
+                  readOnly = {!auth.isAdmin()}
                   min="1"
                   max="10"
                   placeholder='Title of user'
@@ -320,6 +326,7 @@ class EditUser extends Component {
                 <ItemLabel> Location: </ItemLabel>
                 <TextInput
                   type="text"
+                  readOnly = {!auth.isAdmin()}
                   min="1"
                   max="10"
                   placeholder='Office location of user'
@@ -335,6 +342,7 @@ class EditUser extends Component {
                   ref={select => this.type = select}
                   onChange= {this.updateInputValue('type')}
                   name="type" >
+                  readOnly = {!auth.isAdmin()}
                   <option value="">Select a type</option>
                   <option value="employee">Employee</option>
                   <option value="manager">Manager</option>

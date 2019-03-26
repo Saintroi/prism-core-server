@@ -171,7 +171,7 @@ class CreateUser extends Component {
     render(){
         return(
           <React.Fragment>
-            <OpenBtn move={this.state.createVisible}><PlusButton click={this.toggleCreate} move={this.state.createVisible}></PlusButton></OpenBtn>
+            {auth.isAdmin() && <OpenBtn move={this.state.createVisible}><PlusButton click={this.toggleCreate} move={this.state.createVisible}></PlusButton></OpenBtn>}
             <Mutation mutation={ADD_USER} onCompleted={this.props.queryRefresh}>
             {(createUser, { data, loading, error }) => (
               <FormWrapper ref={this.setWrapperRef} show={this.state.createVisible}>
