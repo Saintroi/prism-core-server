@@ -156,6 +156,15 @@ class ListUser extends Component {
     return newUsers.sort(compare);
   }
 
+  updateCache = async (cache, {data: { delUser } }) => {
+    const { users } = cache.readQuery({ query: LIST_USERS });
+    const newUsers = users.filter(i => i.id !== delUser.id)
+    await cache.writeQuery({
+      query: LIST_USERS,
+      data: { users: newUsers}
+    });
+  }
+
 
   render(){
     return(
@@ -206,7 +215,7 @@ class ListUser extends Component {
                     <span>{ user.officePhone }</span>
                     <span>{ user.cellPhone }</span>
                     <span>{ user.location }</span>
-                    <EditUser user = {user} queryRefresh = {() => refetch()}></EditUser>
+                    <EditUser user = {user} queryRefresh = {() => refetch()} update = {this.updateCache}></EditUser>
                     </UserRow>
                   ))}
               </UserCols>

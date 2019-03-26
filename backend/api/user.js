@@ -65,7 +65,9 @@ userApi.deleteUser = (async (_, args) => {
   // TODO - change validation to use main validation object
   if (!id) throw new Error('A valid id is required to delete a user.');
 
-  return userApi.deleteOne({ id });
+await userApi.deleteOne({ id });
+
+  return {id: id};
 });
 
 

@@ -19,15 +19,16 @@ const typeDefs = gql`
     admin: Boolean
   }
 
+
   extend type Query {
     me: User
     users (firstName: String, lastName: String): [User]
   }
   input UserInput{
     id: Int
-    firstName: String!
-    lastName: String!
-    email: String!
+    firstName: String
+    lastName: String
+    email: String
     type: String
     cellPhone: String
     officePhone: String

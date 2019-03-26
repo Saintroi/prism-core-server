@@ -23,6 +23,16 @@ mutation updateUser($input: UserInput!){
  }
 `
 
+const DELETE_USER = gql`
+
+mutation deleteUser($input: UserInput!){
+  
+  deleteUser(input: $input){
+   id
+  }
+ }
+`
+
 // Styles   
 
 
@@ -343,7 +353,7 @@ class EditUser extends Component {
                     </InputWrapper>
                     <AddBtn type="submit">Update User</AddBtn>
                     <div></div>
-                    <DeleteBtn>Delete User</DeleteBtn>
+
                   </React.Fragment>
 
 
@@ -353,12 +363,29 @@ class EditUser extends Component {
               {loading && <p>Loading...</p> }
               {error && <p>Error :( Please try again</p>}
             
-              </form>
-
-            </FormWrapper>
-          )}
-        </Mutation>
-      
+          </form>
+          {(auth.isAdmin()) ?
+            <Mutation mutation={DELETE_USER} onCompleted={this.props.queryRefresh}>
+              {(deleteUser, { data, loading, error }) => (
+                <DeleteBtn
+                  onClick = {e => {
+                    deleteUser({ variables: {
+                      input:{
+                          id: this.state.user.id}
+                  }});
+                  this.toggleCreate();
+                  }}
+                >Delete User
+                  {loading && <p>Loading...</p> }
+                  {error && <p>Error Deleting, Please try again</p>}
+                </DeleteBtn>
+                )}
+              </Mutation>
+              : <div></div>
+            }
+              </FormWrapper>
+            )}
+          </Mutation>
       </React.Fragment>
           )
           }
