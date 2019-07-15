@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+// Styles
+
 const Wrapper = styled.div`
     width: 50%;
+    z-index: 9;
+    justify-self: center;
+
+    &:hover {
+        transform: translate(0,0)
+
+    }
 `
 
 const Circle = styled.div`
@@ -14,10 +23,18 @@ const Circle = styled.div`
     background-color: #00467E;
     transition: transform 300ms;
     margin: 2px;
+
+    ${Wrapper} :hover & {
+        transform: rotate(90deg)
+    }
     
     .top{
         top: 0px
         transform: ${props => props.move ? "translate(-8, 8)" : ""};
+
+        ${Wrapper} :hover & {
+            transform: rotate(90deg)
+        }
     }
 
     .middle {
@@ -27,12 +44,17 @@ const Circle = styled.div`
     .bottom {
         top: 12px
         transform: ${props => props.move ? "translate(8, 8)" : ""};
+        
+        ${Wrapper} :hover & {
+            transform: rotate(90deg)
+        }
     }
 
 `;
 
 
 
+// JSX
 
 class DotMenu extends Component {
     constructor (props) {

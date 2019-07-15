@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React, { useEffect} from 'react';
 import {Route, withRouter} from 'react-router-dom';
 import Nav from './components/nav';
 import ListUser from './components/listUser';
 import Callback from './components/callback';
+import ErrorBoundary from './components/errorBoundary';
 import './App.css';
 import auth from './auth'
 import GuardedRoute from './components/guardedRoute';
 import styled from 'styled-components';
 
 // Styles  
-
-
-const AppWrapper = styled.div`
-position: relative;
-`;
 
 const Grid = styled.div`
   background-color: #F4F4F4
@@ -42,40 +38,39 @@ const Grid = styled.div`
 
 // JSX
 
-class App extends Component {
+function App(props) {
 
-  state = {
-    tryingSilent: true,
-  };
+  useEffect(() => {
+    if (props.location.pathname === '/callback') return;
 
-  async componentDidMount() {
-    if (this.props.location.pathname === '/callback') return;
+    async function tryAuth(){
     try {
       await auth.silentAuth();
-      this.setState({ tryingSilent: false });
       this.forceUpdate();
     } catch (err) {
       if (err.error === 'login_required') return;
-      console.log(err.error);
+      console.error(err.error);
     }
   }
 
+  tryAuth();
+  });
 
+  const finished = (auth.tokenLoading || auth.isAuthenticated)
 
-  render() {
-    if (auth.tokenLoading || auth.isAuthenticated) {
-    return (
-      <AppWrapper key="app" >
-        <Grid move={this.state.createVisible}>
-        <Nav />
-        <GuardedRoute exact path='/' component={ListUser}></GuardedRoute>
-        <Route exact path='/callback' component={Callback} />
-        </Grid>
-      </AppWrapper>
-    );
+  if(!finished){
+    return 'Loading';
   }
-  return 'Loading';
-}
+
+  return (
+    <ErrorBoundary>
+      <Grid >
+      <Nav />
+      <GuardedRoute exact path='/' component={ListUser}></GuardedRoute>
+      <Route exact path='/callback' component={Callback} />
+      </Grid>
+    </ErrorBoundary>
+  );
 }
 
 export default withRouter(App);

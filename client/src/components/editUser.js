@@ -7,6 +7,7 @@ import CloseButton from './Static/staticX';
 import auth from '../auth';
 
 
+
 // Queries
 const ADD_USER = gql`
 
@@ -56,18 +57,6 @@ const FormWrapper = styled.div`
 
   font-size: 1.3vmin;
   `;
-
-  const OpenBtn = styled.div`
-    z-index: 9;
-    transition: transform 200ms;
-    transform: ${props => props.move ? "translate(-24vw, -5px)" : ""};
-    justify-self: center;
-
-    &:hover{
-        transform: rotate(90deg)
-    }
-  
-`;
 
 const InputWrapper = styled.div`
   display: flex;
@@ -211,7 +200,7 @@ class EditUser extends Component {
     render(){
         return(
           <React.Fragment>
-            <OpenBtn move={this.state.createVisible}><DotMenu click={this.toggleCreate} move={this.state.createVisible}></DotMenu></OpenBtn>
+            <DotMenu click={this.toggleCreate} move={this.state.createVisible}></DotMenu>
             <Mutation mutation={ADD_USER} onCompleted={this.props.queryRefresh}>
             {(createUser, { data, loading, error }) => (
               <FormWrapper ref={this.setWrapperRef} show={this.state.createVisible}>

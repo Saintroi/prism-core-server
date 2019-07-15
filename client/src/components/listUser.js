@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
@@ -113,6 +113,7 @@ const SearchBar = styled.input`
   margin-top: 8px;
   border-radius: 0px;
   width: 80%;
+  text-indent 5px;
 `;
 
 
@@ -125,34 +126,21 @@ function compare(a,b) {
 }
 
 
-class ListUser extends Component {
+function ListUser(props) {
 
-  constructor(props) {
-    super(props);
+  const [loading, setLoading] = useState(true)
 
-    this.handleSearchChange = this.handleSearchChange.bind(this)
-    this._search = HTMLInputElement;
+  const [searchQuery, setSearchQuery] = useState('');
+  const search = React.createRef();
+
+  function handleSearchChange(event) {
+    setSearchQuery(event.target.value);
+    search.current.focus();
   }
 
-  state = {
-    searchQuery: '',
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this._search.focus();
-  }
-
-  createUserClick = () => {
-    this.setState({showCreate:!this.state.showCreate})
-  }
-
-  handleSearchChange = (event) => {
-    this.setState({searchQuery:event.target.value});
-  }
-
-  handleSearch = (users) => {
+  function handleSearch(users) {
     let newUsers = []
-    const str = this.state.searchQuery.toLowerCase()
+    const str = searchQuery.toLowerCase()
 
     users.forEach(function(user) {
       if(user.name.toLowerCase().includes(str) || user.cellPhone.toLowerCase().includes(str)) newUsers.push(user);
@@ -160,20 +148,14 @@ class ListUser extends Component {
 
     return newUsers.sort(compare);
   }
-/* supposed to remove item from cache, but not needed
 
-  updateCache = async (cache, {data: { delUser } }) => {
-    const { users } = cache.readQuery({ query: LIST_USERS });
-    const newUsers = users.filter(i => i.id !== delUser.id)
-    await cache.writeQuery({
-      query: LIST_USERS,
-      data: { users: newUsers}
-    });
-  }
-  */
+  useEffect(() => {
+
+    !loading && search.current.focus()
+
+  });
 
 
-  render(){
     return(
       <React.Fragment>
         <Query query={CURRENT_USER}>
@@ -196,15 +178,15 @@ class ListUser extends Component {
         {({ loading, error, data, refetch}) => {
           if (loading) return <LoadingDots></LoadingDots>;
           if (error){
-            console.log(error.message)
+            console.error(error.message)
             return auth.signOut();
-            } 
-    
+            }
+            setLoading(false);
           return (
             <React.Fragment>
               <CreateUser queryRefresh = {() => refetch()}></CreateUser>
             <HeadWrap>
-              <SearchBar onChange={this.handleSearchChange} placeholder=" Search by name or cell #..." autoFocus={true} ref={c => (this._search = c)}/>
+              <SearchBar onChange={handleSearchChange} placeholder=" Search by name or cell #..." ref={search}/>
             </HeadWrap>
             <UserCols>
 
@@ -216,7 +198,7 @@ class ListUser extends Component {
                 <span>LOCATION</span>
               </UserHeader>
               {!loading &&
-                this.handleSearch(data.users).map(user => (
+                handleSearch(data.users).map(user => (
                   <UserRow key={user.id}>
                     <span>{ user.name }</span>
                     <span>{ user.email }</span>
@@ -234,6 +216,5 @@ class ListUser extends Component {
       </React.Fragment>
       );
     }
-  }
 
   export default withRouter(ListUser);

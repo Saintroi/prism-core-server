@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import auth from '../auth';
 import dirIcon from '../img/contacts.svg'
 import styled from 'styled-components';
 import logo from '../img/PrismLogo.png';
 
+// styles
 
 const NavWrap = styled.div`
   display: flex;
@@ -131,16 +132,16 @@ const PrismLogo = styled.div`
   }
 `;
 
+//JSX
 
-class Nav extends Component {
+function Nav(props) {
 
-  logout = () => {
+  const logout = () => {
     auth.logout();
-    this.props.history.replace('/');
+    props.history.replace('/');
   };
 
 
-  render() {
     return (
     <NavWrap>
       <PrismLogo> <img src={logo} alt="Prism Systems, Inc."></img> </PrismLogo>
@@ -155,12 +156,11 @@ class Nav extends Component {
       </NavList>
       
       {
-        (auth.isAuthenticated()) ? (<LogButton onClick={() => this.logout()}>Log out </LogButton>) : (<LogButton onClick={() => auth.login()}>Log In</LogButton>)
+        (auth.isAuthenticated()) ? (<LogButton onClick={() => logout()}>Log out </LogButton>) : (<LogButton onClick={() => auth.login()}>Log In</LogButton>)
       }
     </NavWrap>
 
     );
   }
-}
 
 export default withRouter(Nav);
