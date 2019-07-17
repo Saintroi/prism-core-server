@@ -142,7 +142,7 @@ function Nav(props) {
   };
 
 
-    return (
+  return (
     <NavWrap>
       <PrismLogo> <img src={logo} alt="Prism Systems, Inc."></img> </PrismLogo>
       <NavList>

@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
-import { Mutation } from "react-apollo";
-import { gql } from "apollo-boost";
+import React, { useState, useEffect } from 'react';
+import { useMutation } from "graphql-hooks";
 import styled from 'styled-components';
 import DotMenu from './Animations/animatedDots';
 import CloseButton from './Static/staticX';
 import auth from '../auth';
 
 
-
 // Queries
-const ADD_USER = gql`
+
+const EDIT_USER = `
 
 mutation updateUser($input: UserInput!){
   
@@ -24,7 +23,7 @@ mutation updateUser($input: UserInput!){
  }
 `
 
-const DELETE_USER = gql`
+const DELETE_USER = `
 
 mutation deleteUser($input: UserInput!){
   
@@ -140,254 +139,230 @@ const DeleteBtn = styled.button`
   margin-bottom: auto;
 `;
 
-class EditUser extends Component {
+function EditUser(props) {
 
-  constructor(props) {
-    super(props);
+  const [createVisible, setCreateVisible] = useState(false);
+  const [user, setUser] = useState(props.user);
+  const [currUserId] = useState(auth.getId());
+  const [wrapperRef, setWrapperRef] = useState(null)
 
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.updateInputValue = this.updateInputValue.bind(this);
-
-    this.state = {
-      createVisible: false,
-      user: this.props.user,
-      currUserId: auth.getId()
-    };
-    //console.log(this.state.user);
-    //console.log(this.state.currUserId);
-
+  function handleClickOutside(event) {
+    if (wrapperRef && !wrapperRef.contains(event.target)) {
+      setCreateVisible(false);
+    }
   }
 
-  
-
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
-
-  updateInputValue = (propertyName) => event => {
-    const { user } = this.state;
+  const updateInputValue = (propertyName) => event => {
     const newUser = {
       ...user,
       [propertyName]: event.target.value
     };
-    this.setState({ user: newUser });
+    setUser(newUser)
   }
 
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-
-  toggleCreate = () => {
-    this.setState({
-      createVisible: !this.state.createVisible
-    });
+  function toggleCreate(){
+    setCreateVisible(!createVisible)
   };
 
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
+  useEffect(() => {
+    console.log("edit");
+    document.addEventListener('mousedown', handleClickOutside);
 
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.setState({
-        createVisible: false
-      });
-    }
-  }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
 
-    render(){
-        return(
-          <React.Fragment>
-            <DotMenu click={this.toggleCreate} move={this.state.createVisible}></DotMenu>
-            <Mutation mutation={ADD_USER} onCompleted={this.props.queryRefresh}>
-            {(createUser, { data, loading, error }) => (
-              <FormWrapper ref={this.setWrapperRef} show={this.state.createVisible}>
-                <CloseButton click={this.toggleCreate}></CloseButton> 
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    createUser({ variables: {
-                        input:{
-                            id: this.props.user.id,
-                            firstName: this.first.value,
-                            lastName: this.last.value,
-                            email: this.email.value,
-                            title: this.title.value,
-                            admin: this.admin.checked,
-                            location: this.location.value,
-                            cellPhone: this.cell.value,
-                            officePhone: this.office.value,
-                            type: this.type.value
-                    }
-                    }});
-    
-                    this.first.value = "";
-                    this.last.value = "";
-                    this.email.value = "";
-                    this.title.value = "";
-                    this.admin.value = "";
-                    this.location.value = "";
-                    this.cell.value = "";
-                    this.office.value = "";
-                    this.type.value = "";
-                  }}
-                >
-                
-              <InputWrapper>
-                <ItemLabel> First: </ItemLabel>
-                <TextInput
-                  type="text"
-                  readOnly = {!auth.isAdmin()}
-                  autoFocus
-                  required
-                  placeholder='First name of user'
-                  value={this.state.user.firstName || ''}
-                  ref={node => this.first = node}
-                  onChange= {this.updateInputValue('firstName')} />
-                </InputWrapper>
-                
-              <InputWrapper>
-                <ItemLabel> Last: </ItemLabel>
-                <TextInput
-                  type="text"
-                  readOnly = {!auth.isAdmin()}
-                  required
-                  placeholder='Last name of user'
-                  value={this.state.user.lastName || ''}
-                  ref={node => this.last = node}
-                  onChange= {this.updateInputValue('lastName')} />
-                </InputWrapper>
+  let dat = {}
+  let editUser;
+  let deleteUser;
+  [editUser, dat] = useMutation(EDIT_USER);
+  [deleteUser, dat] = useMutation(DELETE_USER);
 
-              <InputWrapper>
-                <ItemLabel> Email: </ItemLabel>
-                <TextInput
-                  type="email"
-                  readOnly = {!auth.isAdmin()}
-                  required
-                  placeholder='first.last@prismsystems.com'
-                  value={this.state.user.email || ''}
-                  ref={node => this.email = node}
-                  onChange= {this.updateInputValue('email')} />
-                </InputWrapper>
+  if (dat.loading) return <p>Loading...</p>
+  if (dat.error) return <p>Error :( Please try again</p>
 
-              <InputWrapper>
-                <ItemLabel> Cell: </ItemLabel>
-                <TextInput
-                  type="tel"
-                  readOnly = {!auth.isAdmin()}
-                  min="1"
-                  max="10"
-                  placeholder='(XXX) XXX-XXXX'
-                  value={this.state.user.cellPhone || ''}
-                  ref={node => this.cell = node}
-                  onChange= {this.updateInputValue('cellPhone')} />
-                </InputWrapper>
-
-              <InputWrapper>
-                <ItemLabel> Office: </ItemLabel>
-                <TextInput
-                  type="tel"
-                  readOnly = {!auth.isAdmin()}
-                  min="1"
-                  max="10"
-                  placeholder='(XXX) XXX-XXXX'
-                  value={this.state.user.officePhone || ''}
-                  ref={node => this.office = node}
-                  onChange= {this.updateInputValue('officePhone')} />
-                </InputWrapper>
-
-              <InputWrapper>
-                <ItemLabel> Title: </ItemLabel>
-                <TextInput
-                  type="text"
-                  readOnly = {!auth.isAdmin()}
-                  min="1"
-                  max="10"
-                  placeholder='Title of user'
-                  value={this.state.user.title || ''}
-                  ref={node => this.title = node}
-                  onChange= {this.updateInputValue('title')} />
-                </InputWrapper>
-
-              <InputWrapper>
-                <ItemLabel> Location: </ItemLabel>
-                <TextInput
-                  type="text"
-                  readOnly = {!auth.isAdmin()}
-                  min="1"
-                  max="10"
-                  placeholder='Office location of user'
-                  value={this.state.user.location || ''}
-                  ref={node => this.location = node}
-                  onChange= {this.updateInputValue('location')} />
-                </InputWrapper>
-
-              <InputWrapper>
-                <ItemLabel> Type: &nbsp; </ItemLabel>
-                <SelectInput
-                  value = {this.state.user.type || ''}
-                  ref={select => this.type = select}
-                  onChange= {this.updateInputValue('type')}
-                  name="type" >
-                  readOnly = {!auth.isAdmin()}
-                  <option value="">Select a type</option>
-                  <option value="employee">Employee</option>
-                  <option value="manager">Manager</option>
-                  <option value="executive">Executive</option>
-                </SelectInput>
-                </InputWrapper>
-              {
-              (auth.isAdmin()) ?
-                <React.Fragment>
-                  <InputWrapper>
-                    <ItemLabel> Admin Priviledges:&nbsp;</ItemLabel>
-                    <CheckInput
-                      type="checkbox"
-                      ref={node => this.admin = node}
-                      checked = {this.state.user.admin }
-                      onChange= {this.updateInputValue('admin')}
-                    ></CheckInput>
-                    </InputWrapper>
-                    <AddBtn type="submit">Update User</AddBtn>
-                    <div></div>
-
-                  </React.Fragment>
+  let first, last, email, title, admin, location, cell, office, type = {};
 
 
-                : <div></div>
-              }
-
-              {loading && <p>Loading...</p> }
-              {error && <p>Error :( Please try again</p>}
-            
-          </form>
-          {(auth.isAdmin() && (this.state.user.id !== this.state.currUserId)) ?
-            <Mutation mutation={DELETE_USER} onCompleted={this.props.queryRefresh}>
-              {(deleteUser, { data, loading, error }) => (
-                <DeleteBtn
-                  onClick = {e => {
-                    deleteUser({ variables: {
-                      input:{
-                          id: this.state.user.id}
-                  }});
-                  this.toggleCreate();
-                  }}
-                >Delete User
-                  {loading && <p>Loading...</p> }
-                  {error && <p>Error Deleting, Please try again</p>}
-                </DeleteBtn>
-                )}
-              </Mutation>
-              : <div></div>
+  return(
+    <React.Fragment>
+      <DotMenu click={toggleCreate} move={createVisible}></DotMenu>
+      <FormWrapper ref={setWrapperRef} show={createVisible}>
+        <CloseButton click={toggleCreate}></CloseButton> 
+        <form
+          onSubmit={e => {
+            editUser({ variables: {
+                input:{
+                    id: props.user.id,
+                    firstName: first.value,
+                    lastName: last.value,
+                    email: email.value,
+                    title: title.value,
+                    admin: admin.checked,
+                    location: location.value,
+                    cellPhone: cell.value,
+                    officePhone: office.value,
+                    type: type.value
             }
-              </FormWrapper>
-            )}
-          </Mutation>
-      </React.Fragment>
-          )
-          }
-}
+            }}).then(props.queryRefresh);
+
+            first.value = "";
+            last.value = "";
+            email.value = "";
+            title.value = "";
+            admin.value = "";
+            location.value = "";
+            cell.value = "";
+            office.value = "";
+            type.value = "";
+
+            e.preventDefault();
+
+          }}
+        >
+        
+      <InputWrapper>
+        <ItemLabel> First: </ItemLabel>
+        <TextInput
+          type="text"
+          readOnly = {!auth.isAdmin()}
+          autoFocus
+          required
+          placeholder='First name of user'
+          value={user.firstName || ''}
+          ref={node => first = node}
+          onChange= {updateInputValue('firstName')} />
+        </InputWrapper>
+        
+      <InputWrapper>
+        <ItemLabel> Last: </ItemLabel>
+        <TextInput
+          type="text"
+          readOnly = {!auth.isAdmin()}
+          required
+          placeholder='Last name of user'
+          value={user.lastName || ''}
+          ref={node => last = node}
+          onChange= {updateInputValue('lastName')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Email: </ItemLabel>
+        <TextInput
+          type="email"
+          readOnly = {!auth.isAdmin()}
+          required
+          placeholder='first.last@prismsystems.com'
+          value={user.email || ''}
+          ref={node => email = node}
+          onChange= {updateInputValue('email')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Cell: </ItemLabel>
+        <TextInput
+          type="tel"
+          readOnly = {!auth.isAdmin()}
+          min="1"
+          max="10"
+          placeholder='(XXX) XXX-XXXX'
+          value={user.cellPhone || ''}
+          ref={node => cell = node}
+          onChange= {updateInputValue('cellPhone')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Office: </ItemLabel>
+        <TextInput
+          type="tel"
+          readOnly = {!auth.isAdmin()}
+          min="1"
+          max="10"
+          placeholder='(XXX) XXX-XXXX'
+          value={user.officePhone || ''}
+          ref={node => office = node}
+          onChange= {updateInputValue('officePhone')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Title: </ItemLabel>
+        <TextInput
+          type="text"
+          readOnly = {!auth.isAdmin()}
+          min="1"
+          max="10"
+          placeholder='Title of user'
+          value={user.title || ''}
+          ref={node => title = node}
+          onChange= {updateInputValue('title')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Location: </ItemLabel>
+        <TextInput
+          type="text"
+          readOnly = {!auth.isAdmin()}
+          min="1"
+          max="10"
+          placeholder='Office location of user'
+          value={user.location || ''}
+          ref={node => location = node}
+          onChange= {updateInputValue('location')} />
+        </InputWrapper>
+
+      <InputWrapper>
+        <ItemLabel> Type: &nbsp; </ItemLabel>
+        <SelectInput
+          value = {user.type || ''}
+          ref={select => type = select}
+          onChange= {updateInputValue('type')}
+          name="type" >
+          readOnly = {!auth.isAdmin()}
+          <option value="">Select a type</option>
+          <option value="employee">Employee</option>
+          <option value="manager">Manager</option>
+          <option value="executive">Executive</option>
+        </SelectInput>
+        </InputWrapper>
+      {
+      (auth.isAdmin()) ?
+        <React.Fragment>
+          <InputWrapper>
+            <ItemLabel> Admin Priviledges:&nbsp;</ItemLabel>
+            <CheckInput
+              type="checkbox"
+              ref={node => admin = node}
+              checked = {user.admin }
+              onChange= {updateInputValue('admin')}
+            ></CheckInput>
+            </InputWrapper>
+            <AddBtn type="submit">Update User</AddBtn>
+            <div></div>
+
+          </React.Fragment>
+
+
+        : <div></div>
+      }
+    
+  </form>
+  {(auth.isAdmin() && (user.id !== currUserId)) ?
+        <DeleteBtn
+          onClick = {e => {
+            deleteUser({ variables: {
+              input:{
+                  id: user.id}
+          }}).then(props.queryRefresh);
+          toggleCreate();
+          }}
+        >Delete User
+        </DeleteBtn>
+      : <div></div>
+    }
+      </FormWrapper>
+</React.Fragment>
+    )
+    }
 
 export default EditUser;

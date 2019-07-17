@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Query } from "react-apollo";
-import { gql } from "apollo-boost";
+import { useQuery } from "graphql-hooks";
 import auth from '../auth';
 import styled from 'styled-components';
 import LoadingDots from './Animations/animatedLoading';
 import CreateUser from './createUser';
 import EditUser from './editUser';
 
+// Queries
 
-const LIST_USERS = gql`
+const LIST_USERS = `
   query AllUsers {
     users {
       id
@@ -27,7 +27,7 @@ const LIST_USERS = gql`
   }
 `
 
-const CURRENT_USER = gql`
+const CURRENT_USER = `
   query CurrentUser {
     me {
       id
@@ -37,6 +37,8 @@ const CURRENT_USER = gql`
   }
 
 `
+
+// Styles 
 
 const UserHeader = styled.div`
   color: #8298A3;
@@ -117,6 +119,8 @@ const SearchBar = styled.input`
 `;
 
 
+// JSX
+
 function compare(a,b) {
   if (a.lastName < b.lastName)
     return -1;
@@ -125,10 +129,7 @@ function compare(a,b) {
   return 0;
 }
 
-
 function ListUser(props) {
-
-  const [loading, setLoading] = useState(true)
 
   const [searchQuery, setSearchQuery] = useState('');
   const search = React.createRef();
@@ -150,71 +151,56 @@ function ListUser(props) {
   }
 
   useEffect(() => {
-
-    !loading && search.current.focus()
-
+    console.log("list")
+    !dat.loading && search.current.focus();
   });
 
+  let dat = {};
 
-    return(
+  dat = useQuery(CURRENT_USER);
+
+  !(dat.loading || dat.error || !dat.data.me.admin) && auth.setAdmin();
+  !(dat.loading || dat.error) && auth.setId(dat.data.me.id)
+
+   dat = useQuery(LIST_USERS);
+
+
+  if (dat.loading) return <LoadingDots></LoadingDots>;
+  if (dat.error){
+    console.error(dat.error.message)
+    return auth.signOut();
+    }
+
+    return (
       <React.Fragment>
-        <Query query={CURRENT_USER}>
-        {({ loading, error, data }) => {
-          if (loading) return <LoadingDots></LoadingDots>;
-          if (error){
-            if(error.message === "GraphQL error: jwt malformed") return auth.signOut();
-            return <p>{error.message}</p>;
-          }
-          if(data.me.admin) auth.setAdmin();
-          auth.setId(data.me.id);
-          return(<div></div>);
-        }}
-        </Query>
+        <CreateUser queryRefresh = {() => dat.refetch()}></CreateUser>
+      <HeadWrap>
+        <SearchBar onChange={handleSearchChange} placeholder=" Search by name or cell #..." ref={search}/>
+      </HeadWrap>
+      <UserCols>
 
-      <Query 
-        query = {LIST_USERS} 
-        pollInterval={60000}
-      >
-        {({ loading, error, data, refetch}) => {
-          if (loading) return <LoadingDots></LoadingDots>;
-          if (error){
-            console.error(error.message)
-            return auth.signOut();
-            }
-            setLoading(false);
-          return (
-            <React.Fragment>
-              <CreateUser queryRefresh = {() => refetch()}></CreateUser>
-            <HeadWrap>
-              <SearchBar onChange={handleSearchChange} placeholder=" Search by name or cell #..." ref={search}/>
-            </HeadWrap>
-            <UserCols>
-
-              <UserHeader>
-                <span>NAME</span>
-                <span>EMAIL</span>
-                <span>OFFICE #</span>
-                <span>CELL #</span>
-                <span>LOCATION</span>
-              </UserHeader>
-              {!loading &&
-                handleSearch(data.users).map(user => (
-                  <UserRow key={user.id}>
-                    <span>{ user.name }</span>
-                    <span>{ user.email }</span>
-                    <span>{ user.officePhone }</span>
-                    <span>{ user.cellPhone }</span>
-                    <span>{ user.location }</span>
-                    <EditUser user = {user} queryRefresh = {() => refetch()}></EditUser>
-                    </UserRow>
-                  ))}
-              </UserCols>
-              </React.Fragment>
-            );
-          }}
-        </Query>
-      </React.Fragment>
-      );
+        <UserHeader>
+          <span>NAME</span>
+          <span>EMAIL</span>
+          <span>OFFICE #</span>
+          <span>CELL #</span>
+          <span>LOCATION</span>
+          <button onClick={dat.refetch}>REFETCH</button>
+        </UserHeader>
+        {!dat.loading &&
+          handleSearch(dat.data.users).map(user => (
+            <UserRow key={user.id}>
+              <span>{ user.name }</span>
+              <span>{ user.email }</span>
+              <span>{ user.officePhone }</span>
+              <span>{ user.cellPhone }</span>
+              <span>{ user.location }</span>
+              <EditUser user = {user} queryRefresh = {() => dat.refetch()}></EditUser>
+              </UserRow>
+            ))}
+        </UserCols>
+        </React.Fragment>
+      );  
     }
 
   export default withRouter(ListUser);

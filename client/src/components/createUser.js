@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { Mutation } from "react-apollo";
-import { gql } from "apollo-boost";
+import React, { useState, useEffect } from 'react';
+import { useMutation } from "graphql-hooks";
 import styled from 'styled-components';
 import PlusButton from './Animations/animatedPlusBtn';
 import auth from '../auth';
 
 
-// Queries
-const ADD_USER = gql`
+// Mutations
+
+const ADD_USER = `
 
 mutation addUser($input: UserInput!){
   
@@ -23,7 +23,6 @@ mutation addUser($input: UserInput!){
 `
 
 // Styles   
-
 
 const FormWrapper = styled.div`
   position: fixed;
@@ -124,190 +123,186 @@ const AddBtn = styled.button`
   margin-top: 10%;
 
 `;
- // {...props} toggleCreate={this.toggleCreate} 
 
-class CreateUser extends Component {
+//JSX
 
-  constructor(props) {
-    super(props);
+function CreateUser(props) {
 
-    this.setWrapperRef = this.setWrapperRef.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
 
-    this.state = {
-      createVisible: false,
-    };
+  const [createVisible, setCreateVisible] = useState(false);
+
+  const [wrapperRef, setWrapperRef] = useState(null)
+
+
+  function toggleCreate() {
+    setCreateVisible(!createVisible);
   }
 
-  
-
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-
-  toggleCreate = () => {
-    this.setState({
-      createVisible: !this.state.createVisible
-    });
-  };
-
-  setWrapperRef(node) {
-    this.wrapperRef = node;
-  }
-
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      this.setState({
-        createVisible: false
-      });
+  function handleClickOutside(event) {
+    if (wrapperRef && !wrapperRef.contains(event.target)) {
+      setCreateVisible(false);
     }
   }
 
-    render(){
-        return(
-          <React.Fragment>
-            {auth.isAdmin() && <OpenBtn move={this.state.createVisible}><PlusButton click={this.toggleCreate} move={this.state.createVisible}></PlusButton></OpenBtn>}
-            <Mutation mutation={ADD_USER} onCompleted={this.props.queryRefresh}>
-            {(createUser, { data, loading, error }) => (
-              <FormWrapper ref={this.setWrapperRef} show={this.state.createVisible}>
-                {
-                (auth.isAdmin()) ? 
-                  <form
-                    onSubmit={e => {
-                      e.preventDefault();
-                      createUser({ variables: {
-                          input:{
-                              firstName: this.first.value,
-                              lastName: this.last.value,
-                              email: this.email.value,
-                              title: this.title.value,
-                              admin: this.admin.checked,
-                              location: this.location.value,
-                              cellPhone: this.cell.value,
-                              officePhone: this.office.value,
-                              type: this.type.value
-                      }
-                      }});
-      
-                      this.first.value = "";
-                      this.last.value = "";
-                      this.email.value = "";
-                      this.title.value = "";
-                      this.admin.value = "";
-                      this.location.value = "";
-                      this.cell.value = "";
-                      this.office.value = "";
-                      this.type.value = "";
-                    }}
-                  >
-                  
-                <InputWrapper>
-                  <ItemLabel> First: </ItemLabel>
-                  <TextInput
-                    type="text"
-                    autoFocus
-                    required
-                    placeholder='First name of user'
-                    ref={node => this.first = node} />
-                  </InputWrapper>
-                  
-                <InputWrapper>
-                  <ItemLabel> Last: </ItemLabel>
-                  <TextInput
-                    type="text"
-                    required
-                    placeholder='Last name of user'
-                    ref={node => this.last = node} />
-                  </InputWrapper>
+  useEffect(() => {
+    console.log("create")
 
-                <InputWrapper>
-                  <ItemLabel> Email: </ItemLabel>
-                  <TextInput
-                    type="email"
-                    required
-                    placeholder='first.last@prismsystems.com'
-                    ref={node => this.email = node} />
-                  </InputWrapper>
+    document.addEventListener('mousedown', handleClickOutside);
 
-                <InputWrapper>
-                  <ItemLabel> Cell: </ItemLabel>
-                  <TextInput
-                    type="tel"
-                    min="1"
-                    max="10"
-                    placeholder='(XXX) XXX-XXXX'
-                    ref={node => this.cell = node} />
-                  </InputWrapper>
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
 
-                <InputWrapper>
-                  <ItemLabel> Office: </ItemLabel>
-                  <TextInput
-                    type="tel"
-                    min="1"
-                    max="10"
-                    placeholder='(XXX) XXX-XXXX'
-                    ref={node => this.office = node} />
-                  </InputWrapper>
+  const [createUser, {loading, error }] = useMutation(ADD_USER);
 
-                <InputWrapper>
-                  <ItemLabel> Title: </ItemLabel>
-                  <TextInput
-                    type="text"
-                    min="1"
-                    max="10"
-                    placeholder='Title of user'
-                    ref={node => this.title = node} />
-                  </InputWrapper>
+  /*const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [admin, setAdmin] = useState("");
+  const [location, setLocation] = useState("");
+  const [cell, setCell] = useState("");
+  const [office, setOffice] = useState("");
+  const [type, setType] = useState("");*/
 
-                <InputWrapper>
-                  <ItemLabel> Location: </ItemLabel>
-                  <TextInput
-                    type="text"
-                    min="1"
-                    max="10"
-                    placeholder='Office location of user'
-                    ref={node => this.location = node} />
-                  </InputWrapper>
+   let first, last, email, title, admin, location, cell, office, type = {};
 
-                <InputWrapper>
-                  <ItemLabel> Type: &nbsp; </ItemLabel>
-                  <SelectInput
-                    ref={select => this.type = select}
-                    name="type" >
-                    <option value="">Select a type</option>
-                    <option value="employee">Employee</option>
-                    <option value="manager">Manager</option>
-                    <option value="executive">Executive</option>
-                  </SelectInput>
-                  </InputWrapper>
 
-                <InputWrapper>
-                  <ItemLabel> Admin Priviledges:&nbsp;</ItemLabel>
-                  <CheckInput
-                    type="checkbox"
-                    ref={node => this.admin = node}
-                  ></CheckInput>
-                  </InputWrapper>
+  return(
+    <React.Fragment>
+      {auth.isAdmin() && <OpenBtn move={createVisible}><PlusButton click={toggleCreate} move={createVisible}></PlusButton></OpenBtn>}
+      <FormWrapper ref={setWrapperRef} show={createVisible}>
+        {
+        (auth.isAdmin()) ? 
+          <form
+            onSubmit={e => {
+              createUser({ variables: {
+                  input:{
+                      firstName: first.value,
+                      lastName: last.value,
+                      email: email.value,
+                      title: title.value,
+                      admin: admin.checked,
+                      location: location.value,
+                      cellPhone: cell.value,
+                      officePhone: office.value,
+                      type: type.value
+              }
+              }}).then(props.queryRefresh);
 
-                {loading && <p>Loading...</p> }
-                {error && <p>Error :( Please try again</p>}
+              first.value = "";
+              last.value = "";
+              email.value = "";
+              title.value = "";
+              admin.value = "";
+              location.value = "";
+              cell.value = "";
+              office.value = "";
+              type.value = "";
 
-                <AddBtn type="submit">Add User</AddBtn>
-                </form>
-                : <p>Error: Unauthorized</p>
-                }
-            </FormWrapper>
-          )}
-        </Mutation>
-      
-      </React.Fragment>
-          )
-          }
-}
+            e.preventDefault();
+            }}
+          >
+          
+        <InputWrapper>
+          <ItemLabel> First: </ItemLabel>
+          <TextInput
+            type="text"
+            autoFocus
+            required
+            placeholder='First name of user'
+            ref={node => first = node} />
+          </InputWrapper>
+          
+        <InputWrapper>
+          <ItemLabel> Last: </ItemLabel>
+          <TextInput
+            type="text"
+            required
+            placeholder='Last name of user'
+            ref={node => last = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Email: </ItemLabel>
+          <TextInput
+            type="email"
+            required
+            placeholder='first.last@prismsystems.com'
+            ref={node => email = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Cell: </ItemLabel>
+          <TextInput
+            type="tel"
+            min="1"
+            max="10"
+            placeholder='(XXX) XXX-XXXX'
+            ref={node => cell = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Office: </ItemLabel>
+          <TextInput
+            type="tel"
+            min="1"
+            max="10"
+            placeholder='(XXX) XXX-XXXX'
+            ref={node => office = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Title: </ItemLabel>
+          <TextInput
+            type="text"
+            min="1"
+            max="10"
+            placeholder='Title of user'
+            ref={node => title = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Location: </ItemLabel>
+          <TextInput
+            type="text"
+            min="1"
+            max="10"
+            placeholder='Office location of user'
+            ref={node => location = node} />
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Type: &nbsp; </ItemLabel>
+          <SelectInput
+            ref={select => type = select}
+            name="type" >
+            <option value="">Select a type</option>
+            <option value="employee">Employee</option>
+            <option value="manager">Manager</option>
+            <option value="executive">Executive</option>
+          </SelectInput>
+          </InputWrapper>
+
+        <InputWrapper>
+          <ItemLabel> Admin Priviledges:&nbsp;</ItemLabel>
+          <CheckInput
+            type="checkbox"
+            ref={node => admin = node}
+          ></CheckInput>
+          </InputWrapper>
+
+        {loading && <p>Loading...</p> }
+        {error && <p>Error :( Please try again</p>}
+
+        <AddBtn type="submit">Add User</AddBtn>
+        </form>
+        : <p>Error: Unauthorized</p>
+        }
+    </FormWrapper>
+</React.Fragment>
+    );
+  }
 
 export default CreateUser;
