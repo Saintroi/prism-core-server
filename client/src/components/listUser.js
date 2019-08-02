@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { useQuery } from "graphql-hooks";
+import { useQuery } from "react-apollo-hooks";
 import auth from '../auth';
 import styled from 'styled-components';
 import LoadingDots from './Animations/animatedLoading';
 import CreateUser from './createUser';
 import EditUser from './editUser';
+import { gql } from "apollo-boost";
 
 // Queries
 
-const LIST_USERS = `
+const LIST_USERS = gql`
   query AllUsers {
     users {
       id
@@ -27,7 +28,7 @@ const LIST_USERS = `
   }
 `
 
-const CURRENT_USER = `
+const CURRENT_USER = gql`
   query CurrentUser {
     me {
       id
@@ -185,7 +186,6 @@ function ListUser(props) {
           <span>OFFICE #</span>
           <span>CELL #</span>
           <span>LOCATION</span>
-          <button onClick={dat.refetch}>REFETCH</button>
         </UserHeader>
         {!dat.loading &&
           handleSearch(dat.data.users).map(user => (

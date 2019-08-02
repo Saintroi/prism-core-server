@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from "./App";
 import { BrowserRouter } from 'react-router-dom';
-import {GraphQLClient, ClientContext} from 'graphql-hooks';
-import memCache from 'graphql-hooks-memcache'
+import { ApolloProvider } from 'react-apollo-hooks';
+import ApolloClient from "apollo-boost";
 import auth from './auth';
 import config from './config';
 
@@ -13,19 +13,23 @@ import './index.css';
 import registerServiceWorker from './serviceWorker';
 
 
-const client = new GraphQLClient({
-  url: config.serverUrl + '/graphql',
-  cache: memCache(),
-  headers: {
-    authorization: auth.getIdToken(),
+const client = new ApolloClient({
+  uri: config.serverUrl + '/graphql',
+  request: operation => {
+    operation.setContext(context => ({
+      headers: {
+        ...context.headers,
+        authorization: auth.getIdToken(),
       },
-  });
+    }));
+  },
+});
 
 ReactDOM.render(
   <BrowserRouter>
-    <ClientContext.Provider value={client}>
+    <ApolloProvider client={client}>
       <App />
-    </ClientContext.Provider>
+    </ApolloProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );

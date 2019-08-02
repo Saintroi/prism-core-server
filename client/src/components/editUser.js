@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from "graphql-hooks";
+import { useMutation } from "react-apollo-hooks";
 import styled from 'styled-components';
 import DotMenu from './Animations/animatedDots';
 import CloseButton from './Static/staticX';
 import auth from '../auth';
-
+import { gql } from "apollo-boost";
 
 // Queries
 
-const EDIT_USER = `
+const EDIT_USER = gql`
 
 mutation updateUser($input: UserInput!){
   
@@ -23,7 +23,7 @@ mutation updateUser($input: UserInput!){
  }
 `
 
-const DELETE_USER = `
+const DELETE_USER = gql`
 
 mutation deleteUser($input: UserInput!){
   

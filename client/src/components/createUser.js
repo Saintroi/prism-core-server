@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useMutation } from "graphql-hooks";
+import { useMutation } from "react-apollo-hooks";
 import styled from 'styled-components';
 import PlusButton from './Animations/animatedPlusBtn';
 import auth from '../auth';
+import { gql } from "apollo-boost";
 
 
 // Mutations
 
-const ADD_USER = `
+const ADD_USER = gql`
 
 mutation addUser($input: UserInput!){
   
